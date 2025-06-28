@@ -1,0 +1,55 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import numpy as np
+import gspread
+import plotly.express as px
+
+
+
+
+
+#First Extract Data from appropriate google sheet pages:
+gc = gspread.service_account()
+sh = gc.open("SASI 2025 Course Results")
+
+AM_survey_tracker = pd.DataFrame(sh.worksheet("Survey Tracker AM").get_all_values())
+new_header = AM_survey_tracker.iloc[0]
+AM_survey_tracker.columns = new_header
+AM_survey_tracker = AM_survey_tracker[1:]
+
+#take user input here:
+email = st.text_input("Your Survey Receiving Email:")
+st.write("The current email:", email)
+
+
+AM_student_info = AM_survey_tracker[AM_survey_tracker["Email"] == email].iloc[:,:3]
+AM_student = AM_survey_tracker[AM_survey_tracker["Email"] == email].iloc[:,3:].astype(float).clip(upper = 1)
+#Then convert these to pandas-dataframes:
+#Then plot via plotly and display via individuals: 
+
+# Page config
+st.set_page_config(page_title='Student SASI Survey Display', layout='wide')
+
+try:
+    st.subheader(f"Welcome: {AM_student_info.iloc[0,0]} {AM_student_info.iloc[0,1]}")
+    col1, col2 = st.columns(2)
+    col1.metric("Surveys Completed:", f"{AM_student.iloc[0].tolist().count(1.0)}")
+    col2.metric("Total:", f"{len(AM_student.iloc[0].tolist())}")
+
+
+    #the plotly graph
+    red_to_green = [[0, 'red'], [1, 'green']]
+
+    fig_heat = px.imshow(AM_student, x=AM_student.columns, y=AM_student.index, aspect='auto', color_continuous_scale= red_to_green, title = f"Survey's for Student Email: {email}")
+    fig_heat.update_traces(xgap=2, ygap=2)  # Increase the gap to see lines
+    fig_heat.update_layout(coloraxis_colorbar=dict(
+        title=dict(text="Completion Status"),
+        tickvals=[0,1],
+        ticktext=["Incomplete", "Completed"],
+    ))
+    st.plotly_chart(fig_heat)
+
+except:
+    st.subheader(f"Please input your email above")
+

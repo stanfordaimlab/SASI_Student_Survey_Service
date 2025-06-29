@@ -30,23 +30,24 @@ new_header = PM_survey_tracker.iloc[0]
 PM_survey_tracker.columns = new_header
 PM_survey_tracker = PM_survey_tracker[1:]
 
-if email in AM_survey_tracker["Email"]:
-    THE_survey_tracker = AM_survey_tracker
-elif email in PM_survey_tracker["Email"]:
-    THE_survey_tracker = PM_survey_tracker
-else:
-    st.subheader(f"Please input a valid em")
-
-
-THE_student_info = THE_survey_tracker[THE_survey_tracker["Email"] == email].iloc[:,:3]
-THE_student = THE_survey_tracker[THE_survey_tracker["Email"] == email].iloc[:,3:].astype(float).clip(upper = 1)
-#Then convert these to pandas-dataframes:
-#Then plot via plotly and display via individuals: 
-
 # Page config
 st.set_page_config(page_title='Student SASI Survey Display', layout='wide')
 
 try:
+
+    if email in AM_survey_tracker["Email"]:
+        THE_survey_tracker = AM_survey_tracker
+    elif email in PM_survey_tracker["Email"]:
+        THE_survey_tracker = PM_survey_tracker
+    else:
+        st.subheader(f"Please input a valid em")
+
+
+    THE_student_info = THE_survey_tracker[THE_survey_tracker["Email"] == email].iloc[:,:3]
+    THE_student = THE_survey_tracker[THE_survey_tracker["Email"] == email].iloc[:,3:].astype(float).clip(upper = 1)
+    #Then convert these to pandas-dataframes:
+    #Then plot via plotly and display via individuals: 
+
     st.subheader(f"Welcome: {THE_student_info.iloc[0,0]} {THE_student_info.iloc[0,1]}")
     col1, col2 = st.columns(2)
     col1.metric("Surveys Completed:", f"{THE_student_info.iloc[0].tolist().count(1.0)}")

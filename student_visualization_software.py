@@ -6,7 +6,18 @@ import gspread
 import plotly.express as px
 
 
+import os
 
+api_key = os.environ.get('API_KEY')
+
+if api_key:
+    print(f"API Key accessed successfully: {api_key[:5]}...") # Print only a part for security
+# Use the api_key for your operations
+else:
+    print("API_KEY environment variable not found.")
+
+
+gc = gspread.service_account_from_dict(api_key)
 
 
 #First Extract Data from appropriate google sheet pages:
@@ -30,17 +41,21 @@ new_header = PM_survey_tracker.iloc[0]
 PM_survey_tracker.columns = new_header
 PM_survey_tracker = PM_survey_tracker[1:]
 
+THE_survey_tracker = pd.DataFrame()
+
 # Page config
 st.set_page_config(page_title='Student SASI Survey Display', layout='wide')
 
 try:
 
-    if email in AM_survey_tracker["Email"]:
+    if email in AM_survey_tracker["Email"].tolist():
         THE_survey_tracker = AM_survey_tracker
-    elif email in PM_survey_tracker["Email"]:
+        st.subheader(f"You're AM")
+    elif email in PM_survey_tracker["Email"].tolist():
         THE_survey_tracker = PM_survey_tracker
+        st.subheader(f"You're PM")
     else:
-        st.subheader(f"Please input a valid em")
+        st.subheader(f"Please input a valid email:")
 
 
     THE_student_info = THE_survey_tracker[THE_survey_tracker["Email"] == email].iloc[:,:3]
@@ -50,7 +65,7 @@ try:
 
     st.subheader(f"Welcome: {THE_student_info.iloc[0,0]} {THE_student_info.iloc[0,1]}")
     col1, col2 = st.columns(2)
-    col1.metric("Surveys Completed:", f"{THE_student_info.iloc[0].tolist().count(1.0)}")
+    col1.metric("Surveys Completed:", f"{THE_student.iloc[0].tolist().count(1.0)}")
     col2.metric("Total:", f"{len(THE_student.iloc[0].tolist())}")
 
 

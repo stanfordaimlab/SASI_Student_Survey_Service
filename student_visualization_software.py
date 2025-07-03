@@ -8,14 +8,8 @@ import plotly.express as px
 
 import os
 
-api_key = os.environ.get('API_KEY')
 
-if api_key:
-    print(f"API Key accessed successfully: {api_key[:5]}...") # Print only a part for security
-# Use the api_key for your operations
-else:
-    print("API_KEY environment variable not found.")
-
+api_key = st.secrets['API_KEY']
 
 gc = gspread.service_account_from_dict(api_key)
 

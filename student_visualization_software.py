@@ -21,7 +21,6 @@ gc = gspread.service_account_from_dict(api_key)
 
 
 #First Extract Data from appropriate google sheet pages:
-gc = gspread.service_account()
 sh = gc.open("SASI 2025 Course Results")
 
 

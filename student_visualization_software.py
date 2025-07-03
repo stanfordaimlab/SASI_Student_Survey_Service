@@ -4,12 +4,25 @@ import plotly.express as px
 import numpy as np
 import gspread
 import plotly.express as px
+import json
 
 
 import os
 
 
-api_key = st.secrets['API_KEY']
+api_key = {
+  "type": "service_account",
+  "project_id": "som-etheroptime",
+  "private_key_id": f"{st.secrets["private_key_id"]}",
+  "private_key": f"{st.secrets["private_key"]}",
+  "client_email": "sasi-survey-service@som-etheroptime.iam.gserviceaccount.com",
+  "client_id": "106050041923067424820",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sasi-survey-service%40som-etheroptime.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
 
 gc = gspread.service_account_from_dict(api_key)
 
